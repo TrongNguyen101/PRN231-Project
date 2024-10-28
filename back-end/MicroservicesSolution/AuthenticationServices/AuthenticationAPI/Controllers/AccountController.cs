@@ -36,11 +36,11 @@ namespace AuthenticationAPI.Controllers
             var account = await accountRepository.FindAccount(email);
             if (account == null)
             {
-                return BadRequest("Invalid account");
+                return BadRequest("This user is not exist");
             }
             else if (hashAlgorithm.Hash256Algorithm(password) != account.Password)
             {
-                return BadRequest("wrong password");
+                return BadRequest("Wrong password");
             }
             var token = jwtTokenGenerator.GenerateToken(account);
             return Ok("Login successfully: " + token);
