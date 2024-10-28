@@ -2,6 +2,6 @@
 {
     public interface IHashAlgorithmRepository
     {
-        public string HashPassword(string password);
+        public string Hash256Algorithm(string input);
     }
 }

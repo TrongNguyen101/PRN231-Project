@@ -36,7 +36,7 @@ namespace AuthenticationAPI.Controllers
             {
                 return BadRequest("Invalid account");
             }
-            else if (hashAlgorithm.HashPassword(password) != account.Password)
+            else if (hashAlgorithm.Hash256Algorithm(password) != account.Password)
             {
                 return BadRequest("wrong password");
             }
@@ -50,7 +50,7 @@ namespace AuthenticationAPI.Controllers
             AccountDTO account = new AccountDTO
             {
                 Email = registerRequest.Email,
-                Password = hashAlgorithm.HashPassword(registerRequest.Password),
+                Password = hashAlgorithm.Hash256Algorithm(registerRequest.Password),
                 RoleId = registerRequest.RoleId
             };
             await accountRepository.CreateAccount(account);
