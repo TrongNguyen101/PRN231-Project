@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repositories.AccountRepository;
 using Repositories.HashAlgorithmRepository;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AuthenticationAPI.Controllers
 {
@@ -57,15 +59,20 @@ namespace AuthenticationAPI.Controllers
             return Created();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAccounts()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAccounts(int id)
         {
-            List<Account> list;
+            Account account;
             using (var context = new AuthenticationContext())
             {
-                list = await context.Accounts.ToListAsync();
+                account = await context.Accounts.Where(x => x.AcountId == id).Include(x => x.Role).FirstOrDefaultAsync();
             }
-            return Ok(list);
+            JsonSerializerOptions options = new()
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                WriteIndented = true
+            };
+            return Ok(JsonSerializer.Serialize(account, options));
         }
     }
 }
