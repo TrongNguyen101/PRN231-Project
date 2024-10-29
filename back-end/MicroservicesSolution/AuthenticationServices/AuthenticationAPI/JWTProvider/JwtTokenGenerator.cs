@@ -24,7 +24,7 @@ namespace AuthenticationAPI.JWTProvider
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Email, account.Email),
-                new Claim("role", account.RoleId.ToString())
+                new Claim("role", account.Role.RoleName)
             };
 
             var token = new JwtSecurityToken(

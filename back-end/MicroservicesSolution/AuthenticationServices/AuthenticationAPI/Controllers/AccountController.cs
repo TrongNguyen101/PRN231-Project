@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repositories.AccountRepository;
 using Repositories.HashAlgorithmRepository;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AuthenticationAPI.Controllers
 {
@@ -34,11 +36,11 @@ namespace AuthenticationAPI.Controllers
             var account = await accountRepository.FindAccount(email);
             if (account == null)
             {
-                return BadRequest("Invalid account");
+                return BadRequest("This user is not exist");
             }
             else if (hashAlgorithm.Hash256Algorithm(password) != account.Password)
             {
-                return BadRequest("wrong password");
+                return BadRequest("Wrong password");
             }
             var token = jwtTokenGenerator.GenerateToken(account);
             return Ok("Login successfully: " + token);
@@ -51,21 +53,26 @@ namespace AuthenticationAPI.Controllers
             {
                 Email = registerRequest.Email,
                 Password = hashAlgorithm.Hash256Algorithm(registerRequest.Password),
-                RoleId = registerRequest.RoleId
+                RoleId = registerRequest.RoleId,
             };
             await accountRepository.CreateAccount(account);
             return Created();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAccounts()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAccounts(int id)
         {
-            List<Account> list;
+            Account account;
             using (var context = new AuthenticationContext())
             {
-                list = await context.Accounts.ToListAsync();
+                account = await context.Accounts.Where(x => x.AcountId == id).Include(x => x.Role).FirstOrDefaultAsync();
             }
-            return Ok(list);
+            JsonSerializerOptions options = new()
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                WriteIndented = true
+            };
+            return Ok(JsonSerializer.Serialize(account, options));
         }
     }
 }
