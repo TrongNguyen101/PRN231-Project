@@ -43,8 +43,9 @@ namespace AuthenticationAPI.Controllers
                 return BadRequest("Wrong password");
             }
             var token = jwtTokenGenerator.GenerateToken(account);
-            return Ok("Login successfully: " + token);
+            return Ok(token);
         }
+        
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest registerRequest)
@@ -56,7 +57,7 @@ namespace AuthenticationAPI.Controllers
                 RoleId = registerRequest.RoleId,
             };
             await accountRepository.CreateAccount(account);
-            return Created();
+            return Ok("Create account successfully");
         }
 
         [HttpGet("{id}")]
