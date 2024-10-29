@@ -19,14 +19,17 @@ namespace AuthenticationAPI.Controllers
         private readonly IAccountRepository accountRepository;
         private readonly JwtTokenGenerator jwtTokenGenerator;
         private readonly IHashAlgorithmRepository hashAlgorithm;
+        private readonly ILogger<AccountController> logger;
         public AccountController(
             IAccountRepository accountRepository,
             JwtTokenGenerator jwtTokenGenerator,
-            IHashAlgorithmRepository hashAlgorithm)
+            IHashAlgorithmRepository hashAlgorithm,
+            ILogger<AccountController> logger)
         {
             this.accountRepository = accountRepository;
             this.jwtTokenGenerator = jwtTokenGenerator;
             this.hashAlgorithm = hashAlgorithm;
+            this.logger = logger;
         }
 
         [AllowAnonymous]
@@ -36,13 +39,16 @@ namespace AuthenticationAPI.Controllers
             var account = await accountRepository.FindAccount(email);
             if (account == null)
             {
+                logger.LogWarning(StatusCodes.Status400BadRequest + " This user is not exist");
                 return BadRequest("This user is not exist");
             }
             else if (hashAlgorithm.Hash256Algorithm(password) != account.Password)
             {
+                logger.LogWarning(StatusCodes.Status400BadRequest + " Wrong password");
                 return BadRequest("Wrong password");
             }
             var token = jwtTokenGenerator.GenerateToken(account);
+            logger.LogInformation(StatusCodes.Status200OK + " Login successfully");
             return Ok(token);
         }
         
@@ -57,6 +63,7 @@ namespace AuthenticationAPI.Controllers
                 RoleId = registerRequest.RoleId,
             };
             await accountRepository.CreateAccount(account);
+            logger.LogInformation(StatusCodes.Status200OK + " Create account successfully");
             return Ok("Create account successfully");
         }
 
