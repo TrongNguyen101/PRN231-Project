@@ -53,7 +53,7 @@ namespace AuthenticationAPI.Controllers
             {
                 Email = registerRequest.Email,
                 Password = hashAlgorithm.Hash256Algorithm(registerRequest.Password),
-                RoleId = registerRequest.RoleId
+                RoleId = registerRequest.RoleId,
             };
             await accountRepository.CreateAccount(account);
             return Created();
