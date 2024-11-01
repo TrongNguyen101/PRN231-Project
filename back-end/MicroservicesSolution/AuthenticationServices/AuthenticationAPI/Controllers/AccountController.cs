@@ -36,35 +36,51 @@ namespace AuthenticationAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var account = await accountRepository.FindAccount(email);
-            if (account == null)
+            try
             {
-                logger.LogWarning(StatusCodes.Status400BadRequest + " This user is not exist");
-                return BadRequest("This user is not exist");
+                var account = await accountRepository.FindAccount(email);
+                if (account == null)
+                {
+                    logger.LogWarning(StatusCodes.Status400BadRequest + " This user is not exist");
+                    return BadRequest("This user is not exist");
+                }
+                else if (hashAlgorithm.Hash256Algorithm(password) != account.Password)
+                {
+                    logger.LogWarning(StatusCodes.Status400BadRequest + " Wrong password");
+                    return BadRequest("Wrong password");
+                }
+                var token = jwtTokenGenerator.GenerateToken(account);
+                logger.LogInformation(StatusCodes.Status200OK + " Login successfully");
+                return Ok(token);
             }
-            else if (hashAlgorithm.Hash256Algorithm(password) != account.Password)
+            catch
             {
-                logger.LogWarning(StatusCodes.Status400BadRequest + " Wrong password");
-                return BadRequest("Wrong password");
+                logger.LogError(StatusCodes.Status500InternalServerError + " Internal server error");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            var token = jwtTokenGenerator.GenerateToken(account);
-            logger.LogInformation(StatusCodes.Status200OK + " Login successfully");
-            return Ok(token);
         }
-        
+
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest registerRequest)
         {
-            AccountDTO account = new AccountDTO
+            try
             {
-                Email = registerRequest.Email,
-                Password = hashAlgorithm.Hash256Algorithm(registerRequest.Password),
-                RoleId = registerRequest.RoleId,
-            };
-            await accountRepository.CreateAccount(account);
-            logger.LogInformation(StatusCodes.Status200OK + " Create account successfully");
-            return Ok("Create account successfully");
+                AccountDTO account = new AccountDTO
+                {
+                    Email = registerRequest.Email,
+                    Password = hashAlgorithm.Hash256Algorithm(registerRequest.Password),
+                    RoleId = registerRequest.RoleId,
+                };
+                await accountRepository.CreateAccount(account);
+                logger.LogInformation(StatusCodes.Status200OK + " Create account successfully");
+                return Ok("Create account successfully");
+            }
+            catch
+            {
+                logger.LogError(StatusCodes.Status500InternalServerError + " Interval server error");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet("{id}")]
