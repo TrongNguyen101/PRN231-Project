@@ -31,19 +31,19 @@ namespace AuthenticationAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login([FromBody] AccountDTO accountDTO)
         {
-            var account = await accountRepository.FindAccount(email);
+            var account = await accountRepository.FindAccount(accountDTO.Email);
             if (account == null)
             {
                 return BadRequest("This user is not exist");
             }
-            else if (hashAlgorithm.Hash256Algorithm(password) != account.Password)
+            else if (hashAlgorithm.Hash256Algorithm(accountDTO.Password) != account.Password)
             {
                 return BadRequest("Wrong password");
             }
             var token = jwtTokenGenerator.GenerateToken(account);
-            return Ok("Login successfully: " + token);
+            return Ok(token);
         }
         [AllowAnonymous]
         [HttpPost("register")]
@@ -60,6 +60,7 @@ namespace AuthenticationAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAccounts(int id)
         {
             Account account;

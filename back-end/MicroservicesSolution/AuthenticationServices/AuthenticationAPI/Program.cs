@@ -6,6 +6,8 @@ using Repositories.HashAlgorithmRepository;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var JWTSettings = builder.Configuration.GetSection("JwtSettings");
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTSettings["SecretKey"]));
 
 // Add services to the container.
 
@@ -18,26 +20,52 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddSingleton(typeof(IHashAlgorithmRepository), typeof(HashAlgorithmRepository));
 builder.Services.AddScoped<IHashAlgorithmRepository, HashAlgorithmRepository>();
 builder.Services.AddScoped<JwtTokenGenerator>();
-var JWTSettings = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.ASCII.GetBytes(JWTSettings["SecretKey"]);
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = JWTSettings["Issuer"],
-        ValidAudience = JWTSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
-});
+
+
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(options =>
+//{
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = true,
+//        ValidateAudience = true,
+//        ValidateLifetime = true,
+//        ValidateIssuerSigningKey = true,
+//        ValidIssuer = JWTSettings["Issuer"],
+//        ValidAudience = JWTSettings["Audience"],
+//        IssuerSigningKey = new SymmetricSecurityKey(key)
+//    };
+//});
+
+//builder.Configuration
+//    .SetBasePath(Directory.GetCurrentDirectory())
+//    .AddJsonFile("ocelot.json")
+//    .AddJsonFile("appsettings.json")
+//    .Build();
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer("IdentityApiKey", options =>
+//{
+//    //options.Authority = identityUrl;
+//    options.RequireHttpsMetadata = true;
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidIssuer = JWTSettings["Issuer"],
+//        ValidateIssuer = true,
+//        ValidAudiences = new[] { "AuthenticationService" },
+//        ValidateAudience = true,
+//        ValidateLifetime = true,
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = key,
+//    };
+//});
 
 var app = builder.Build();
 
@@ -49,6 +77,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
