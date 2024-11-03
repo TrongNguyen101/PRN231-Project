@@ -1,3 +1,5 @@
+using BusinessObject.Models;
+
 namespace BusinessObject.DataTransfer
 {
     public class ProfileDTO
@@ -9,6 +11,7 @@ namespace BusinessObject.DataTransfer
         public string? MiddleName { get; set; }
         public string? LastName { get; set; }
         public int GenderId { get; set; }
-        public DateOnly Birthday { get; set; }
+        public string Birthday { get; set; }
+        public MajorDTO? MajorDTO { get; set; }
     }
 }

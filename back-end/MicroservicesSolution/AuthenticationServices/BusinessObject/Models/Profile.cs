@@ -22,7 +22,7 @@ namespace BusinessObject.Models
         [Column("Gender ID")]
         public int GenderId { get; set; }
         [Column("Birthday")]
-        public DateOnly Birthday { get; set; }
+        public string Birthday { get; set; }
         [Column("Major ID")]
         public int MajorId { get; set; }
         [Column("Created At")]

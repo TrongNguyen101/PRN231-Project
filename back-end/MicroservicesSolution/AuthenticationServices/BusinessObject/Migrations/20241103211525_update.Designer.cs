@@ -4,6 +4,7 @@ using BusinessObject.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(AuthenticationContext))]
-    partial class AuthenticationContextModelSnapshot : ModelSnapshot
+    [Migration("20241103211525_update")]
+    partial class update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +52,7 @@ namespace BusinessObject.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Account", (string)null);
+                    b.ToTable("Account");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Major", b =>
@@ -67,7 +70,7 @@ namespace BusinessObject.Migrations
 
                     b.HasKey("MajorId");
 
-                    b.ToTable("Major", (string)null);
+                    b.ToTable("Major");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Profile", b =>
@@ -127,7 +130,7 @@ namespace BusinessObject.Migrations
                     b.HasIndex("MajorId")
                         .IsUnique();
 
-                    b.ToTable("Profile", (string)null);
+                    b.ToTable("Profile");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Role", b =>
@@ -145,7 +148,7 @@ namespace BusinessObject.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Role", (string)null);
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Account", b =>

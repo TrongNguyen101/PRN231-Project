@@ -32,6 +32,10 @@ namespace Repositories.AccountRepository
                 LastName = profile.LastName,
                 GenderId = profile.GenderId,
                 Birthday = profile.Birthday,
+                MajorDTO = new MajorDTO
+                {
+                    Name = profile.Major.MajorName,
+                }
             };
         }
 

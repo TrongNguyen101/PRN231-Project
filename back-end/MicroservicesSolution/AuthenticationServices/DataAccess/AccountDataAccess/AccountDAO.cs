@@ -72,7 +72,7 @@ namespace DataAccess.AccountDataAccess
             {
                 using (var dbcontext = new AuthenticationContext())
                 {
-                    profile = await context.Profiles.Where(x => x.AccountId == id).FirstOrDefaultAsync();
+                    profile = await context.Profiles.Where(x => x.AccountId == id).Include(x => x.Account).FirstOrDefaultAsync();
                 }
             }
             catch (Exception ex)
