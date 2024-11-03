@@ -74,7 +74,7 @@ namespace ScheduleService.Controllers
                             subject = schedule.Schedule.Subject.SubjectName ,
                             time = $"{schedule.Schedule.TimeSlot.TimeStart} - {schedule.Schedule.TimeSlot.TimeEnd}",
                             room = schedule.Schedule.Room.RoomName,
-                            //online = schedule.Schedule.TimeSlot.Status
+                            online = schedule.Schedule.TimeSlot.Status
                         };
                     }
                 }
