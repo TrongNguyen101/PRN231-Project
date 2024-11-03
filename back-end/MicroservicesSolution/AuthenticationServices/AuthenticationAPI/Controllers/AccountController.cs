@@ -60,7 +60,6 @@ namespace AuthenticationAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAccounts(int id)
         {
             Account account;
