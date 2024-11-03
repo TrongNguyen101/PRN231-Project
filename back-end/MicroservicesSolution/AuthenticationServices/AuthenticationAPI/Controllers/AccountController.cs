@@ -96,17 +96,17 @@ namespace AuthenticationAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetAccounts(int id)
         {
+            Request.Headers.TryGetValue("Authorization", out var jwtBearer);
+            var token = jwtBearer.ToString().Substring(7);
+            bool isToken = await verifyToken.VerifyTokenAsync(token);
+            bool isRole = await authorizationToken.AuthorizationAsync(token, "admin");
             try
             {
-                Request.Headers.TryGetValue("Authorization", out var jwtBearer);
-                var token = jwtBearer.ToString().Substring(7);
-                bool isToken = await verifyToken.VerifyTokenAsync(token);
-                bool isRole = await authorizationToken.AuthorizationAsync(token, "adminn");
-                if (isToken == false)
+                if (!isToken)
                 {
                     return Unauthorized("Invalid token you can't use this service");
                 }
-                if (isRole == false)
+                if (!isRole)
                 {
                     return Unauthorized("Access denied");
                 }
@@ -124,7 +124,7 @@ namespace AuthenticationAPI.Controllers
             }
             catch
             {
-                logger.LogError(StatusCodes.Status500InternalServerError + " Interval server error");
+                logger.LogError(StatusCodes.Status500InternalServerError + $" Interval server error {isToken} {isRole}");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

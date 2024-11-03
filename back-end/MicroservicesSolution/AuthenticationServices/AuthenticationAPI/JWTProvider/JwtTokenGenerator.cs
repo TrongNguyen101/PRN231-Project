@@ -24,14 +24,13 @@ namespace AuthenticationAPI.JWTProvider
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Email, account.Email),
-                new Claim("role", account.Role.RoleName)
+                new Claim(ClaimTypes.Role, account.Role.RoleName)
             };
 
             var token = new JwtSecurityToken(
                 issuer: JWTSettings["Issuer"],
                 audience: JWTSettings["Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(JWTSettings["ExpiresInMinutes"])),
                 signingCredentials: creds
             );
 

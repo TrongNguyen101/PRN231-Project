@@ -6,7 +6,7 @@ namespace Ultils.AuthorizationToken
 {
     public class JwtDecoder
     {
-        public static T DecodedPayload<T>(string JwtToken) where T : class
+        public static T DecodedPayload<T>(dynamic JwtToken) where T : class
         {
             var parts = JwtToken.Split('.');
             if (parts.Length != 3)

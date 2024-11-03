@@ -26,7 +26,7 @@ namespace Ultils.VerifyToken
 
             var tokenData = $"{encodedHeader}.{encodedPayload}";
 
-            var endcodedKey = Encoding.ASCII.GetBytes(JwtSettings["SecretKey"]);
+            var endcodedKey = Encoding.UTF8.GetBytes(JwtSettings["SecretKey"]);
             var signingKey = new SymmetricSecurityKey(endcodedKey);
 
             using var hmac = new HMACSHA256(signingKey.Key);
