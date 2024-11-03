@@ -15,6 +15,10 @@ namespace Repositories.AccountRepository
                 Email = account.Email,
                 Password = account.Password,
                 RoleId = account.RoleId,
+                Role = new RoleDTO 
+                {
+                    RoleName = account.Role.RoleName
+                }
             };
         }
 

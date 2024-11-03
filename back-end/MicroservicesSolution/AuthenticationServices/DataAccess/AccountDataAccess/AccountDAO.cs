@@ -34,7 +34,7 @@ namespace DataAccess.AccountDataAccess
             {
                 using (var dbcontext = new AuthenticationContext())
                 {
-                    Account account = await context.Accounts.FirstOrDefaultAsync(x => x.Email == email);
+                    Account account = await context.Accounts.Where(x => x.Email == email).Include(x => x.Role).FirstOrDefaultAsync();
                     return account;
                 }
             }
