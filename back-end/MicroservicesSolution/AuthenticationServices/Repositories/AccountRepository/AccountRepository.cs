@@ -32,7 +32,6 @@ namespace Repositories.AccountRepository
                 LastName = profile.LastName,
                 GenderId = profile.GenderId,
                 Birthday = profile.Birthday,
-                MajorId = profile.MajorId,
             };
         }
 
