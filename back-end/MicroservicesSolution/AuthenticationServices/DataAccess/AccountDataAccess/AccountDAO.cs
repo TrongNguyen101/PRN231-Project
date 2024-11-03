@@ -1,4 +1,5 @@
-﻿using BusinessObject.DataContext;
+﻿using System.Drawing;
+using BusinessObject.DataContext;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,6 +61,26 @@ namespace DataAccess.AccountDataAccess
                 throw new Exception(ex.Message);
             }
 
+        }
+        #endregion
+
+        #region Find profile
+        public async Task<Profile?> FindProfileByAccountAsync(int id)
+        {
+            var profile = new Profile();
+            try
+            {
+                using (var dbcontext = new AuthenticationContext())
+                {
+                    profile = await context.Profiles.Where(x => x.AccountId == id).FirstOrDefaultAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception(ex.Message);
+            }
+            return profile;
         }
         #endregion
     }

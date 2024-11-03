@@ -23,7 +23,8 @@ namespace AuthenticationAPI.JWTProvider
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Email, account.Email),
+                new Claim("Email", account.Email),
+                new Claim("Id", account.Id.ToString()),
                 new Claim("Role", account.Role.RoleName)
             };
 

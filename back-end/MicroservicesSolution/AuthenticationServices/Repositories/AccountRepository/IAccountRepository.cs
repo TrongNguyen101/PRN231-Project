@@ -6,5 +6,6 @@ namespace Repositories.AccountRepository
     {
         Task<AccountDTO> FindAccount(string email);
         Task CreateAccount(AccountDTO account);
+        Task<ProfileDTO> GetProfile(int id);
     }
 }

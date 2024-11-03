@@ -34,26 +34,27 @@ namespace AuthenticationAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] AccountDTO accountDTO)
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            var account = await accountRepository.FindAccount(accountDTO.Email);
+            var account = await accountRepository.FindAccount(loginRequest.UserName);
             if (account == null)
             {
                 logger.LogWarning(StatusCodes.Status400BadRequest + " This user is not exist");
                 return BadRequest("This user is not exist");
             }
-            else if (hashAlgorithm.Hash256Algorithm(accountDTO.Password) != account.Password)
+            else if (hashAlgorithm.Hash256Algorithm(loginRequest.Password) != account.Password)
             {
+                Console.WriteLine(hashAlgorithm.Hash256Algorithm(loginRequest.Password) + " " + account.Password);
                 logger.LogWarning(StatusCodes.Status400BadRequest + " Wrong password");
                 return BadRequest("Wrong password");
             }
             var token = jwtTokenGenerator.GenerateToken(account);
-            
+
             logger.LogInformation(StatusCodes.Status200OK + " Login successfully");
 
             return Ok(token);
         }
-        
+
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest registerRequest)
@@ -83,6 +84,18 @@ namespace AuthenticationAPI.Controllers
                 WriteIndented = true
             };
             return Ok(JsonSerializer.Serialize(account, options));
+        }
+
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile(int id)
+        {
+            var profile = await accountRepository.GetProfile(id);
+            JsonSerializerOptions options = new()
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                WriteIndented = true
+            };
+            return Ok(JsonSerializer.Serialize(profile, options));
         }
     }
 }

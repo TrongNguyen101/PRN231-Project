@@ -7,18 +7,32 @@ namespace Repositories.AccountRepository
 {
     public class AccountRepository : IAccountRepository
     {
-        private readonly IHashAlgorithmRepository hashAlgorithm;
-        private AccountDTO MapToDto(Account account)
+        private AccountDTO MapToAccountDto(Account account)
         {
             return new AccountDTO
             {
+                Id = account.AcountId,
                 Email = account.Email,
                 Password = account.Password,
                 RoleId = account.RoleId,
-                Role = new RoleDTO 
+                Role = new RoleDTO
                 {
                     RoleName = account.Role.RoleName
                 }
+            };
+        }
+
+        private ProfileDTO MapToProfileDto(Profile profile)
+        {
+            return new ProfileDTO
+            {
+                Code = profile.Code,
+                FirtName = profile.FirtName,
+                MiddleName = profile.MiddleName,
+                LastName = profile.LastName,
+                GenderId = profile.GenderId,
+                Birthday = profile.Birthday,
+                MajorId = profile.MajorId,
             };
         }
 
@@ -29,7 +43,7 @@ namespace Repositories.AccountRepository
             {
                 return null;
             }
-            return MapToDto(account);
+            return MapToAccountDto(account);
         }
 
         public async Task CreateAccount(AccountDTO accountDTO)
@@ -41,6 +55,12 @@ namespace Repositories.AccountRepository
                 RoleId = accountDTO.RoleId,
             };
             await AccountDAO.GetInstance().AddAccountAsync(account);
+        }
+
+        public async Task<ProfileDTO> GetProfile(int id)
+        {
+            var account = await AccountDAO.GetInstance().FindProfileByAccountAsync(id);
+            return MapToProfileDto(account);
         }
     }
 }

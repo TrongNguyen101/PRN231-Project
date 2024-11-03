@@ -21,7 +21,7 @@ namespace BusinessObject.DataContext
                    .SetBasePath(Directory.GetCurrentDirectory())
                    .AddJsonFile("appsettings.json")
                    .Build();
-                var connectionString = configuration.GetConnectionString("BangConnection");
+                var connectionString = configuration.GetConnectionString("MacConnection");
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
