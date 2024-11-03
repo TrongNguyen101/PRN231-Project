@@ -34,21 +34,23 @@ namespace AuthenticationAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login([FromBody] AccountDTO accountDTO)
         {
-            var account = await accountRepository.FindAccount(email);
+            var account = await accountRepository.FindAccount(accountDTO.Email);
             if (account == null)
             {
                 logger.LogWarning(StatusCodes.Status400BadRequest + " This user is not exist");
                 return BadRequest("This user is not exist");
             }
-            else if (hashAlgorithm.Hash256Algorithm(password) != account.Password)
+            else if (hashAlgorithm.Hash256Algorithm(accountDTO.Password) != account.Password)
             {
                 logger.LogWarning(StatusCodes.Status400BadRequest + " Wrong password");
                 return BadRequest("Wrong password");
             }
             var token = jwtTokenGenerator.GenerateToken(account);
+            
             logger.LogInformation(StatusCodes.Status200OK + " Login successfully");
+
             return Ok(token);
         }
         
