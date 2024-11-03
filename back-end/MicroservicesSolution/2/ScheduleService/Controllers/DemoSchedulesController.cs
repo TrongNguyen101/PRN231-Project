@@ -19,10 +19,70 @@ namespace ScheduleService.Controllers
 
         // GET: api/DemoSchedules
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<Schedule>>> GetSchedules()
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<object>>> GetSchedules()
         {
-            return await _context.Schedules.Include(room => room.Room).Include(clas => clas.Class).ToListAsync();
+            var result = new List<object>();
+
+            // Lặp qua các slot từ 1 đến 6
+            for (int slot = 1; slot <= 6; slot++)
+            {
+                var slotData = new Dictionary<string, object>
+                    {
+                        { "slot", $"Slot {slot}" },
+                        { "monday", null },
+                        { "tuesday", null },
+                        { "wednesday", null },
+                        { "thursday", null },
+                        { "friday", null },
+                        { "saturday", null },
+                        { "sunday", null }
+                    };
+
+
+                var schedules = _context.Schedules
+                   .Include(s => s.Subject)
+                   .Include(s => s.TimeSlot)
+                   .Include(s => s.Room)// Nếu có bảng liên quan, ví dụ TimeSlot
+                   .Where(s => s.TimeSlotId == slot)
+                   .Select(s => new { s.Date.DayOfWeek, Schedule = s })
+                   .ToList()
+                   .GroupBy(s => s.DayOfWeek)
+                   .ToList();
+
+                // Duyệt qua từng nhóm (ngày trong tuần)
+                foreach (var scheduleGroup in schedules)
+                {
+                    var day = scheduleGroup.Key switch
+                    {
+                        DayOfWeek.Monday => "monday",
+                        DayOfWeek.Tuesday => "tuesday",
+                        DayOfWeek.Wednesday => "wednesday",
+                        DayOfWeek.Thursday => "thursday",
+                        DayOfWeek.Friday => "friday",
+                        DayOfWeek.Saturday => "saturday",
+                        DayOfWeek.Sunday => "sunday",
+                        _ => null
+                    };
+
+                    if (day != null)
+                    {
+                        // Chỉ lấy lịch đầu tiên trong nhóm (hoặc có thể xử lý theo yêu cầu của bạn)
+                        var schedule = scheduleGroup.First();
+                        slotData[day] = new
+                        {
+                            subject = schedule.Schedule.Subject.SubjectName ,
+                            time = $"{schedule.Schedule.TimeSlot.TimeStart} - {schedule.Schedule.TimeSlot.TimeEnd}",
+                            room = schedule.Schedule.Room.RoomName,
+                            //online = schedule.Schedule.TimeSlot.Status
+                        };
+                    }
+                }
+
+                result.Add(slotData);
+            }
+
+            return Ok(result);
         }
 
         // GET: api/DemoSchedules/5

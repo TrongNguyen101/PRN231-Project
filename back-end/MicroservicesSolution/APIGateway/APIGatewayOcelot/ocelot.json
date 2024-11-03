@@ -32,7 +32,26 @@
       "RouteClaimsRequirement": {
         "Role": "Admin"
       }
+    },
+
+
+
+
+
+
+    {
+      "DownstreamPathTemplate": "/api/DemoSchedules",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7078
+        }
+      ],
+      "UpstreamPathTemplate": "/api/DemoSchedules",
+      "UpstreamHttpMethod": [ "Get" ]
     }
+
 
   ]
 }

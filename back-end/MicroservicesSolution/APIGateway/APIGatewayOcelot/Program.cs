@@ -22,11 +22,7 @@ builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddEnvironmentVariables()
     .Build();
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+builder.Services.AddAuthentication("IdentityApiKey")
 .AddJwtBearer("IdentityApiKey", options =>
 {
     options.RequireHttpsMetadata = true;

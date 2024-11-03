@@ -13,10 +13,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors();
+
 builder.Services.AddSingleton<ScheduleContext>();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+   // options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
 builder.Configuration
@@ -24,11 +28,7 @@ builder.Configuration
     .AddJsonFile("appsettings.json")
     .Build();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+builder.Services.AddAuthentication("IdentityApiKey")
 .AddJwtBearer("IdentityApiKey", options =>
 {
     options.RequireHttpsMetadata = true;
@@ -41,6 +41,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = key,
+        RoleClaimType = "Role"
     };
 });
 
@@ -56,6 +57,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors(options => options
+.AllowAnyOrigin()
+.AllowAnyHeader()
+.AllowAnyMethod());
 
 app.UseHttpsRedirection();
 
