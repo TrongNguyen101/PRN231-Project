@@ -95,6 +95,8 @@ namespace ScheduleBusinessObject.DataContext
 
                 entity.Property(s => s.Date);
 
+                entity.Property(s => s.Isdelete);
+
                 entity.Property(schedule => schedule.ScheduleId)
                 .IsRequired(true)
                 .HasColumnName("Schedule Id")

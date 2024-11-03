@@ -25,7 +25,7 @@ namespace ScheduleService.Controllers
             var result = new List<object>();
 
             // Lặp qua các slot từ 1 đến 6
-            for (int slot = 1; slot <= 6; slot++)
+            for (int slot = 1; slot <= 4; slot++)
             {
                 var slotData = new Dictionary<string, object>
                     {
@@ -74,7 +74,7 @@ namespace ScheduleService.Controllers
                             subject = schedule.Schedule.Subject.SubjectName ,
                             time = $"{schedule.Schedule.TimeSlot.TimeStart} - {schedule.Schedule.TimeSlot.TimeEnd}",
                             room = schedule.Schedule.Room.RoomName,
-                            online = schedule.Schedule.TimeSlot.Status
+                            date = schedule.Schedule.Date
                         };
                     }
                 }
@@ -133,12 +133,52 @@ namespace ScheduleService.Controllers
         // POST: api/DemoSchedules
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Schedule>> PostSchedule(Schedule schedule)
+        public async Task<ActionResult> PostSchedule([FromBody] Schedule schedule)
         {
+
+            // Kiểm tra trùng lịch theo từng tiêu chí
+            bool isRoomOccupied = _context.Schedules.Any(s => s.RoomId == schedule.RoomId &&
+                                                              s.TimeSlotId == schedule.TimeSlotId &&
+                                                              s.Date == schedule.Date);
+
+            if (isRoomOccupied)
+            {
+                return BadRequest("The room is not available");
+            }
+
+            bool isLecturerOccupied = _context.Schedules.Any(s => s.LectureId == schedule.LectureId &&
+                                                                  s.TimeSlotId == schedule.TimeSlotId &&
+                                                                  s.Date == schedule.Date);
+            if (isLecturerOccupied)
+            {
+                return BadRequest("The Lecturer is busy");
+            }
+
+            bool isClassScheduled = _context.Schedules.Any(s => s.ClassId == schedule.ClassId &&
+                                                                s.TimeSlotId == schedule.TimeSlotId &&
+                                                                s.Date == schedule.Date);
+
+            if (isClassScheduled)
+            {
+                return BadRequest("The class had another schedule");
+            }
+
+            // Ràng buộc số lượng giảng viên tối đa
+            //int lecturerCount = _context.Lecturers.Count();
+            int schedulesAtSameTime = _context.Schedules.Count(s => s.TimeSlotId == schedule.TimeSlotId &&
+                                                                    s.Date == schedule.Date);
+            //if (schedulesAtSameTime >= lecturerCount)
+            //{
+            //    return BadRequest("Số lượng lịch tại cùng thời gian đã đạt tối đa cho số giảng viên khả dụng.");
+            //}
+
+
+          
+
             _context.Schedules.Add(schedule);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSchedule", new { id = schedule.ScheduleId }, schedule);
+            return Ok("The class added successfully.");
         }
 
         // DELETE: api/DemoSchedules/5

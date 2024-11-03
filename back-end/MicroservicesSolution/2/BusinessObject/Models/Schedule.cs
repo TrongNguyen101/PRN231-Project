@@ -33,5 +33,7 @@ namespace ScheduleBusinessObject.Models
 
         //Everyday has schedule 
         public DateOnly Date { get; set; }
+
+        public string? Isdelete { get; set; }
     }
 }
