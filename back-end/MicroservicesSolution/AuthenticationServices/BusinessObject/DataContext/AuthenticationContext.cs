@@ -1,6 +1,7 @@
 ﻿using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace BusinessObject.DataContext
 {
@@ -27,6 +28,9 @@ namespace BusinessObject.DataContext
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // modelBuilder.Entity<Profile>().HasData(
+            //     new Profile {ProfileId = , AccountId = 2, Birthday = "2002-01-01", Code = "admin", FirtName = "admin", MiddleName = "admin", LastName = "admin", MajorId = 1, GenderId = 1, CreatedAt = "2024-01-01", LastModifiedAt = "2024-01-01"}
+            // );
             modelBuilder.Entity<Role>()
                 .HasMany(entity => entity.Accounts)
                 .WithOne(entity => entity.Role)

@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace BusinessObject.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDB : Migration
+    public partial class initDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,8 +42,8 @@ namespace BusinessObject.Migrations
                 {
                     AccountID = table.Column<int>(name: "Account ID", type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RoleID = table.Column<int>(name: "Role ID", type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -61,17 +60,18 @@ namespace BusinessObject.Migrations
                 name: "Profile",
                 columns: table => new
                 {
-                    ProfileID = table.Column<Guid>(name: "Profile ID", type: "uniqueidentifier", nullable: false),
+                    ProfileID = table.Column<int>(name: "Profile ID", type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     AccountID = table.Column<int>(name: "Account ID", type: "int", nullable: true),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirtName = table.Column<string>(name: "Firt Name", type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(name: "First Name", type: "nvarchar(max)", nullable: true),
                     MiddelName = table.Column<string>(name: "Middel Name", type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(name: "Last Name", type: "nvarchar(max)", nullable: true),
                     GenderID = table.Column<int>(name: "Gender ID", type: "int", nullable: false),
-                    Birthday = table.Column<DateOnly>(type: "date", nullable: false),
+                    Birthday = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MajorID = table.Column<int>(name: "Major ID", type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(name: "Created At", type: "datetime2", nullable: false),
-                    LastModifiedAt = table.Column<DateTime>(name: "Last Modified At", type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<string>(name: "Created At", type: "nvarchar(max)", nullable: false),
+                    LastModifiedAt = table.Column<string>(name: "Last Modified At", type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

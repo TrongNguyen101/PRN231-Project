@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(AuthenticationContext))]
-    [Migration("20241103211525_update")]
-    partial class update
+    [Migration("20241103221149_initDb")]
+    partial class initDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,10 +75,12 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Profile", b =>
                 {
-                    b.Property<Guid>("ProfileId")
+                    b.Property<int>("ProfileId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Profile ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileId"));
 
                     b.Property<int?>("AccountId")
                         .HasColumnType("int")
@@ -93,20 +95,22 @@ namespace BusinessObject.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Code");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                    b.Property<string>("CreatedAt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("Created At");
 
-                    b.Property<string>("FirtName")
+                    b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Firt Name");
+                        .HasColumnName("First Name");
 
                     b.Property<int>("GenderId")
                         .HasColumnType("int")
                         .HasColumnName("Gender ID");
 
-                    b.Property<DateTime>("LastModifiedAt")
-                        .HasColumnType("datetime2")
+                    b.Property<string>("LastModifiedAt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("Last Modified At");
 
                     b.Property<string>("LastName")

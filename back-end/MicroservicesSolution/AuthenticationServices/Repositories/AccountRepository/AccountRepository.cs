@@ -27,7 +27,7 @@ namespace Repositories.AccountRepository
             return new ProfileDTO
             {
                 Code = profile.Code,
-                FirtName = profile.FirtName,
+                FirtName = profile.FirstName,
                 MiddleName = profile.MiddleName,
                 LastName = profile.LastName,
                 GenderId = profile.GenderId,

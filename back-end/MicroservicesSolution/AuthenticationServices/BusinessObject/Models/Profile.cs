@@ -8,13 +8,13 @@ namespace BusinessObject.Models
     {
         [Column("Profile ID")]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid ProfileId { get; set; }
+        public int ProfileId { get; set; }
         [Column("Account ID")]
         public int? AccountId { get; set; }
         [Column("Code")]
         public string? Code { get; set; }
-        [Column("Firt Name")]
-        public string? FirtName { get; set; }
+        [Column("First Name")]
+        public string? FirstName { get; set; }
         [Column("Middel Name")]
         public string? MiddleName { get; set; }
         [Column("Last Name")]
@@ -26,9 +26,9 @@ namespace BusinessObject.Models
         [Column("Major ID")]
         public int MajorId { get; set; }
         [Column("Created At")]
-        public DateTime CreatedAt { get; set; }
+        public string CreatedAt { get; set; }
         [Column("Last Modified At")]
-        public DateTime LastModifiedAt { get; set; }
+        public string LastModifiedAt { get; set; }
         public Account? Account { get; set; }
         public Major? Major { get; set; }
     }

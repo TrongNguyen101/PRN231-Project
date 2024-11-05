@@ -49,7 +49,7 @@ namespace BusinessObject.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Account", (string)null);
+                    b.ToTable("Account");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Major", b =>
@@ -67,15 +67,17 @@ namespace BusinessObject.Migrations
 
                     b.HasKey("MajorId");
 
-                    b.ToTable("Major", (string)null);
+                    b.ToTable("Major");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Profile", b =>
                 {
-                    b.Property<Guid>("ProfileId")
+                    b.Property<int>("ProfileId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("int")
                         .HasColumnName("Profile ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileId"));
 
                     b.Property<int?>("AccountId")
                         .HasColumnType("int")
@@ -90,20 +92,22 @@ namespace BusinessObject.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Code");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                    b.Property<string>("CreatedAt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("Created At");
 
-                    b.Property<string>("FirtName")
+                    b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Firt Name");
+                        .HasColumnName("First Name");
 
                     b.Property<int>("GenderId")
                         .HasColumnType("int")
                         .HasColumnName("Gender ID");
 
-                    b.Property<DateTime>("LastModifiedAt")
-                        .HasColumnType("datetime2")
+                    b.Property<string>("LastModifiedAt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("Last Modified At");
 
                     b.Property<string>("LastName")
@@ -127,7 +131,7 @@ namespace BusinessObject.Migrations
                     b.HasIndex("MajorId")
                         .IsUnique();
 
-                    b.ToTable("Profile", (string)null);
+                    b.ToTable("Profile");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Role", b =>
@@ -145,7 +149,7 @@ namespace BusinessObject.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Role", (string)null);
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Account", b =>
