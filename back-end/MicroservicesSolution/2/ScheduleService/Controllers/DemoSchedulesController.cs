@@ -85,6 +85,38 @@ namespace ScheduleService.Controllers
             return Ok(result);
         }
 
+        [HttpGet("by-class-and-date")]
+        public async Task<IActionResult> GetSchedulesByClassAndDate([FromQuery] int classId, [FromQuery] string date)
+        {
+            // Kiểm tra đầu vào của ngày có hợp lệ không
+            if (!DateOnly.TryParse(date, out DateOnly searchDate))
+            {
+                return BadRequest("Invalid date format. Please use yyyy-MM-dd.");
+            }
+
+            // Thực hiện truy vấn để lấy các bản ghi Schedule theo classId và ngày
+            var schedules = await _context.Schedules
+                   .Where(s => s.ClassId == classId && s.Date == searchDate)
+                   .Select(s => new
+                   {
+                       SlotName = s.TimeSlot.SlotId,
+                       SubjectName = s.Subject.SubjectName,
+                       Time = $"({s.TimeSlot.TimeStart} - {s.TimeSlot.TimeEnd})",
+                       ClassName = s.Class.ClassName,
+                       Room = s.Room.RoomName
+                   })
+                     .ToListAsync();
+
+            // Kiểm tra nếu không có bản ghi nào
+            if (schedules == null || !schedules.Any())
+            {
+                return NotFound("No schedules found for the given class and date.");
+            }
+
+            return Ok(schedules);
+        }
+
+
         // GET: api/DemoSchedules/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Schedule>> GetSchedule(int id)
